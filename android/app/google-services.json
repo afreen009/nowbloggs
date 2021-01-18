@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "181729840013",
+    "project_id": "blog-wordpress-4b3c7",
+    "storage_bucket": "blog-wordpress-4b3c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181729840013:android:693ca62c3575ec978b4bc4",
+        "android_client_info": {
+          "package_name": "com.blog.wordpress"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181729840013-1qgs9gc8o2r0bbi53m0o9lqkjlvr0c66.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.blog.wordpress",
+            "certificate_hash": "88fdfe4035ba57e581d40676448736d462f946fd"
+          }
+        },
+        {
+          "client_id": "181729840013-657192t0mu6vr0b0eopse4o2bu569mn0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATjnCDU73lHHNZLPDmPbxTANuboLa0J50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181729840013-657192t0mu6vr0b0eopse4o2bu569mn0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "181729840013-2lrdcvip47c2o90egvbkhgm8ir636b6s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.genius.blog"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

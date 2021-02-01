@@ -1,25 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:google_signin_example/page/post_details.dart';
+import 'package:google_signin_example/page/sharing_post.dart';
+import 'package:share/share.dart';
 
 import '../model/post_entity.dart';
 import 'helpers.dart';
 // import '../widgets/helpers.dart';
 
-class PostListItem extends StatelessWidget {
+class PostListItem extends StatefulWidget {
   final PostEntity post;
 
   PostListItem(this.post);
 
   @override
+  _PostListItemState createState() => _PostListItemState();
+}
+
+class _PostListItemState extends State<PostListItem> {
+  // SharingPost share;
+
+  String _selectedChoices;
+
+  // final shareData = SharingPost();
+
+  void _select(String choice) {
+    setState(() {
+      _selectedChoices = choice;
+    });
+    // showSnackBar(choice);
+  }
+
+  sharePost(
+    BuildContext context,
+  ) {
+    print(widget.post.link);
+    final RenderBox box = context.findRenderObject();
+    Share.share(widget.post.title + '\n' + widget.post.link,
+        subject: widget.post.link,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  }
+  @override
   Widget build(BuildContext context) {
     // print(post.image);
-    String imageUrl = post.image;
+    String imageUrl = widget.post.image;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
       child: GestureDetector(
         onTap: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => PostDetails(post)));
+              MaterialPageRoute(builder: (context) => PostDetails(widget.post)));
         },
         child: Row(
           children: <Widget>[
@@ -29,7 +58,7 @@ class PostListItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: imageUrl.isNotEmpty
                     ? CachedImage(
-                        post.image,
+                        widget.post.image,
                         width: 100,
                         height: 85,
                       )
@@ -44,7 +73,7 @@ class PostListItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      post.title,
+                      widget.post.title,
                       textAlign: TextAlign.left,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
@@ -55,10 +84,10 @@ class PostListItem extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(post.date),
+                        Text(widget.post.date),
                         Expanded(
                           child: Text(
-                            post.category,
+                            widget.post.category,
                             textAlign: TextAlign.end,
                             overflow: TextOverflow.ellipsis,
                           ),

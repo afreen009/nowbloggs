@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_signin_example/model/channel.dart';
-import 'package:google_signin_example/model/channel_models.dart';
 import 'package:google_signin_example/model/video.dart';
-import 'package:google_signin_example/model/video_model.dart';
 import 'package:google_signin_example/screens/video_screen.dart';
 import 'package:google_signin_example/services/api_services.dart';
+import 'package:google_signin_example/services/youtube_service.dart';
 
-class VideoPlayerApp extends StatefulWidget {
+class HomeVideos extends StatefulWidget {
   @override
-  _VideoPlayerAppState createState() => _VideoPlayerAppState();
+  _HomeVideosState createState() => _HomeVideosState();
 }
 
-class _VideoPlayerAppState extends State<VideoPlayerApp> {
+class _HomeVideosState extends State<HomeVideos> {
+  final YoutubeAPIService _youtubeAPIService =
+      YoutubeAPIService.youtubeAPIService;
   Channel _channel;
   Channel _channel1;
   Channel _channel2;
@@ -135,14 +136,14 @@ class _VideoPlayerAppState extends State<VideoPlayerApp> {
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(0, 1),
-                      blurRadius: 6.0,
-                    ),
-                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black12,
+                  //     offset: Offset(0, .000.1),
+                  //     blurRadius: 6.0,
+                  //   ),
+                  // ],
                 ),
                 child: Image(image: NetworkImage(video.thumbnailUrl)),
               ),
@@ -208,24 +209,24 @@ class _VideoPlayerAppState extends State<VideoPlayerApp> {
     // int items2 = _channel2.videos.length;
     // // int items3 = _channel3.videos.length;
     // print(items);
-    return Scaffold(
-      body: _channel != null
-          ? NotificationListener<ScrollNotification>(
-              onNotification: (ScrollNotification scrollDetails) {
-                if (!_isLoading &&
-                    _channel.videos.length != int.parse(_channel.videoCount) &&
-                    _channel1.videos.length !=
-                        int.parse(_channel1.videoCount) &&
-                    // _channel2.videos.length !=
-                    //     int.parse(_channel2.videoCount) &&
-                    // _channel3.videos.length !=
-                    //     int.parse(_channel3.videoCount) &&
-                    scrollDetails.metrics.pixels ==
-                        scrollDetails.metrics.maxScrollExtent) {
-                  _loadMoreVideos();
-                }
-                return false;
-              },
+    return _channel != null
+        ? NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollDetails) {
+              if (!_isLoading &&
+                  _channel.videos.length != int.parse(_channel.videoCount) &&
+                  // _channel1.videos.length != int.parse(_channel1.videoCount) &&
+                  // _channel2.videos.length !=
+                  //     int.parse(_channel2.videoCount) &&
+                  // _channel3.videos.length !=
+                  //     int.parse(_channel3.videoCount) &&
+                  scrollDetails.metrics.pixels ==
+                      scrollDetails.metrics.maxScrollExtent) {
+                _loadMoreVideos();
+              }
+              return false;
+            },
+            child: Container(
+              // height: 500,
               child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ListView.builder(
@@ -239,14 +240,14 @@ class _VideoPlayerAppState extends State<VideoPlayerApp> {
                   },
                 ),
               ),
-            )
-          : Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColor, // Red
-                ),
+            ),
+          )
+        : Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).primaryColor, // Red
               ),
             ),
-    );
+          );
   }
 }

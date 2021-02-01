@@ -6,14 +6,18 @@ import '../model/post_entity.dart';
 
 class WpApi {
   static const String BASE_URL = URL + REST_URL_PREFIX + '/wp/v2/';
-  
-  static Future<List<PostEntity>> getPostsList({int category = 0, int page = 1, String baseurl}) async {
-    
+
+  static Future<List<PostEntity>> getPostsList(
+      {int category = 0, int page = 1, String baseurl}) async {
+    print('inside the getpostlist');
+
     List<PostEntity> posts = List();
     try {
       String extra = category != 0 ? '&categories=' + '$category' : '';
-      print(baseurl + REST_URL_PREFIX + '/wp/v2/posts?_embed&page=$page' + extra);
-      dynamic response = await http.get(baseurl + REST_URL_PREFIX + '/wp/v2/posts?_embed&page=$page');
+      print(
+          baseurl + REST_URL_PREFIX + '/wp/v2/posts?_embed&page=$page' + extra);
+      dynamic response = await http
+          .get(baseurl + REST_URL_PREFIX + '/wp/v2/posts?_embed&page=$page');
       dynamic json = jsonDecode(response.body);
 
       (json as List).forEach((v) {
@@ -22,14 +26,20 @@ class WpApi {
     } catch (e) {
       //TODO Handle No Internet Response
     }
+    print(posts);
     return posts;
   }
 
-  static Future<List<PostCategory>> getCategoriesList({int page = 1,String baseurl}) async {
+  static Future<List<PostCategory>> getCategoriesList(
+      {int page = 1, String baseurl}) async {
     List<PostCategory> categories = List();
     try {
-      dynamic response = await http.get(baseurl +REST_URL_PREFIX + '/wp/v2/categories?orderby=count&order=desc&per_page=15&page=$page');
-      print(baseurl +REST_URL_PREFIX + '/wp/v2/categories?orderby=count&order=desc&per_page=15&page=$page');
+      dynamic response = await http.get(baseurl +
+          REST_URL_PREFIX +
+          '/wp/v2/categories?orderby=count&order=desc&per_page=15&page=$page');
+      print(baseurl +
+          REST_URL_PREFIX +
+          '/wp/v2/categories?orderby=count&order=desc&per_page=15&page=$page');
       dynamic json = jsonDecode(response.body);
 
       (json as List).forEach((v) {

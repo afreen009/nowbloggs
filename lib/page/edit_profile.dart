@@ -1,40 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:google_signin_example/page/theme.dart';
 import 'package:google_signin_example/screens/auth/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';
 
 class SettingsUI extends StatelessWidget {
-  final String email;
-  final String photoUrl;
-  final String displayName;
-  SettingsUI({this.email, this.displayName, this.photoUrl});
+  // final String email;
+  // final String photoUrl;
+  // final String displayName;
+  // SettingsUI({this.email, this.displayName, this.photoUrl});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Setting UI",
-      home: EditProfilePage(
-          email: email, displayName: displayName, photoUrl: photoUrl),
+      home: EditProfilePage(),
     );
   }
 }
 
 class EditProfilePage extends StatefulWidget {
-  final String email;
-  final String photoUrl;
-  final String displayName;
-  EditProfilePage({this.email, this.displayName, this.photoUrl});
+  // final String email;
+  // final String photoUrl;
+  // final String displayName;
+  // EditProfilePage({this.email, this.displayName, this.photoUrl});
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
   bool showPassword = false;
+  String email;
+  String photoUrl;
+  String displayName;
+  sharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    email = prefs.getString('email');
+    photoUrl = prefs.getString('photoUrl');
+    displayName = prefs.getString('displayName');
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    sharedPreferences();
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(widget.email);
-    print(widget.photoUrl);
-    print(widget.displayName);
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(left: 16, right: 16),
@@ -61,40 +76,65 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         image: DecorationImage(
                             fit: BoxFit.cover,
                             image: NetworkImage(
-                              widget.photoUrl.toString(),
+                              photoUrl.toString(),
                             ))),
                     // image: DecorationImage(
                     //     fit: BoxFit.cover,
                     //     image: Image.network()),
                     // child: Image.network(widget.photoUrl.toString()),
                   ),
-                  Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            width: 4,
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                          ),
-                          color: Colors.green,
-                        ),
-                        child: Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                        ),
-                      )),
+                  // Positioned(
+                  //   bottom: 0,
+                  //   right: 0,
+                  //   child: Container(
+                  //     height: 40,
+                  //     width: 40,
+                  //     decoration: BoxDecoration(
+                  //       shape: BoxShape.circle,
+                  //       border: Border.all(
+                  //         width: 4,
+                  //         color: Theme.of(context).scaffoldBackgroundColor,
+                  //       ),
+                  //       color: Colors.green,
+                  //     ),
+                  //     child: Icon(
+                  //       Icons.edit,
+                  //       color: Colors.white,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
             SizedBox(
               height: 35,
             ),
-            buildTextField("Full Name", widget.displayName, false),
-            buildTextField("E-mail", widget.email, false),
+            buildTextField("Full Name", displayName, false),
+            buildTextField("E-mail", email, false),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ThemePage()));
+              },
+              child: Container(
+                height: 30,
+                // color: Colors.pink,
+                child: Row(
+                  children: [
+                    Icon(Icons.color_lens_outlined),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text('Theme',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          // color: Colors.black,
+                        )),
+                  ],
+                ),
+              ),
+            )
             // SizedBox(
             //   height: 35,
             // ),
@@ -159,7 +199,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     },
                     icon: Icon(
                       Icons.remove_red_eye,
-                      color: Colors.grey,
+                      // color: Colors.grey,
                     ),
                   )
                 : null,
@@ -170,7 +210,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             hintStyle: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
             )),
       ),
     );

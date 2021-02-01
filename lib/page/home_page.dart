@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_signin_example/page/home.dart';
 import 'package:google_signin_example/screens/auth/auth.dart';
-import 'package:google_signin_example/widget/login.dart';
+import 'package:google_signin_example/utilities/googlebutton.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Welcome extends StatefulWidget {
   @override
@@ -16,58 +16,18 @@ final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 // final GoogleSignIn googleSignIn = GoogleSignIn();
 
 class _WelcomeState extends State<Welcome> {
-  FirebaseUser user;
+  // FirebaseUser user;
   Color primaryColor = Color(0xff18203d);
   Color secondaryColor = Color(0xff232c51);
   Color logoGreen = Color(0xff25bcbb);
   @override
   Widget build(BuildContext context) {
-    void click() {
-      signInWithGoogle().then((user) => {
-            print(user),
-            this.user = user,
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => HomePage(
-                          email: user.email,
-                          photoUrl: user.photoUrl,
-                          displayName: user.displayName,
-                        )))
-          });
-    }
-
-    Widget googleLoginButton() {
-      return OutlineButton(
-          onPressed: click,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
-          splashColor: Colors.grey,
-          borderSide: BorderSide(color: Colors.grey),
-          child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    FontAwesomeIcons.google,
-                    color: Colors.red,
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text('Sign in with Google',
-                          style: TextStyle(color: Colors.grey, fontSize: 20)))
-                ],
-              )));
-    }
-
     return Scaffold(
       backgroundColor: primaryColor,
       body: Stack(
         children: [
           Positioned(
-            top: MediaQuery.of(context).size.height / 4,
+            top: MediaQuery.of(context).size.height / 6,
             left: 5,
             right: 5,
             child: Container(
@@ -95,22 +55,22 @@ class _WelcomeState extends State<Welcome> {
                   ),
                   //Texts and Styling of them
                   Text(
-                    'Welcome to Genius.',
+                    'Welcome to the Genius App.',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white, fontSize: 28),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'A one-stop app for you to watch the latest posts on the Go!!',
+                    'Your journey to achieve genius, starts here.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(color: Colors.grey[600], fontSize: 18),
                   ),
                   SizedBox(
-                    height: 15,
+                    height: 20,
                   ),
                   //Our MaterialButton which when pressed will take us to a new screen named as
                   //LoginScreen
-                  googleLoginButton(),
+                  GoogleSignupButtonWidget(),
                 ],
               ),
             ),

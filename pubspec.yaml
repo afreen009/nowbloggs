@@ -8,12 +8,17 @@ dependencies:
     sdk: flutter
   animations: ^1.1.2
   cached_network_image: ^2.0.0
-  cloud_firestore: null
+  cloud_firestore: ^0.16.0
   cupertino_icons: ^1.0.0
   custom_switch: ^0.0.1
-  firebase_auth: null
-  firebase_core: ^0.4.5
+  dio: ^3.0.10
+  firebase_analytics: ^7.0.1
+  firebase_auth: ^0.20.0+1
+  firebase_core: ^0.7.0
+  firebase_messaging: null
+  firebase_storage: ^7.0.0
   flutter_html: ^0.11.0
+  flutter_local_notifications: ^1.4.4+1
   fluttertoast: ^7.1.6
   font_awesome_flutter: ^8.10.0
   form_field_validator: ^1.0.1
@@ -23,12 +28,13 @@ dependencies:
   http: ^0.12.0+2
   intl: ^0.16.1
   lint: ^1.2.0
-  provider: ^4.3.2+2
+  provider: ^4.3.3
+  receive_sharing_intent: ^1.4.2
   share: ^0.6.5+4
+  shared_preferences: ^0.5.12+4
   shimmer: ^1.1.2
   url_launcher: null
   youtube_player_flutter: ^6.0.3+2
-  receive_sharing_intent: ^1.4.2
 
 dev_dependencies:
   flutter_test:

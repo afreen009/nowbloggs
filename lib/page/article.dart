@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
+import 'package:google_signin_example/admob.dart';
 import 'package:google_signin_example/model/channel.dart';
 import 'package:google_signin_example/model/channel_models.dart';
 import 'package:google_signin_example/model/post_entity.dart';
@@ -11,7 +13,11 @@ import 'package:google_signin_example/page/video_Page.dart';
 import 'package:google_signin_example/page/view_all.dart';
 import 'package:google_signin_example/screens/video_screen.dart';
 import 'package:google_signin_example/services/api_services.dart';
+import 'package:google_signin_example/tabs/video2.dart';
+import 'package:google_signin_example/tabs/videosPage.dart';
 import 'package:google_signin_example/widget/config.dart';
+
+import 'explore_page.dart';
 
 class Articles extends StatefulWidget {
   @override
@@ -21,6 +27,7 @@ class Articles extends StatefulWidget {
 class _ArticlesState extends State<Articles> {
   Channel _channel;
   bool _isLoading = false;
+  VideoPlayerApp3 list = new VideoPlayerApp3();
   @override
   void initState() {
     List tempList = new List();
@@ -28,6 +35,13 @@ class _ArticlesState extends State<Articles> {
     super.initState();
 
     _initChannel();
+    FirebaseAdMob.instance.initialize(appId: BannerAd.testAdUnitId);
+    // _bannerAd = myBanner
+    //   ..load()
+    //   ..show(
+    //     anchorType: AnchorType.top,
+    //     anchorOffset: kToolbarHeight + 50,
+    //   );
   }
 
   _initChannel() async {
@@ -40,6 +54,7 @@ class _ArticlesState extends State<Articles> {
 
   _loadMoreVideos() async {
     _isLoading = true;
+
     List<Video> moreVideos = await APIService.instance
         .fetchVideosFromPlaylist(playlistId: _channel.uploadPlaylistId);
     List<Video> allVideos = _channel.videos..addAll(moreVideos);
@@ -49,6 +64,31 @@ class _ArticlesState extends State<Articles> {
     _isLoading = false;
   }
 
+  static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutterio', 'beautiful apps'],
+    contentUrl: 'https://flutter.io',
+    childDirected: false,
+    testDevices: <String>[], // Android emulators are considered test devices
+  );
+
+  BannerAd myBanner = BannerAd(
+    adUnitId: BannerAd.testAdUnitId,
+    size: AdSize.banner,
+    targetingInfo: targetingInfo,
+    listener: (MobileAdEvent event) {
+      print("BannerAd event is $event");
+    },
+  );
+
+  InterstitialAd myInterstitialAd = InterstitialAd(
+    adUnitId: InterstitialAd.testAdUnitId,
+    targetingInfo: targetingInfo,
+    listener: (MobileAdEvent event) {
+      print("InterstitialAd event is $event");
+    },
+  );
+
+  BannerAd _bannerAd;
   _buildVideo(Video video) {
     return Flex(
       direction: Axis.vertical,
@@ -103,164 +143,248 @@ class _ArticlesState extends State<Articles> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "Top Posts",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+      child: Container(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 80,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 10,
                 ),
-              ),
-              Spacer(),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ViewAll(
-                                baseurl: [
-                                  'https://enginejunkies.com/',
-                                  'http://festivalsofearth.com/',
-                                  'http://insuranceofearth.com/',
-                                  'https://bookworms99.com/'
-                                ],
-                                option: 'view',
-                              )));
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: Color(0xff25bcbb),
-                  ),
-                  child: Text(
-                    "view all",
-                    style: TextStyle(
-                      color: Colors.grey[900],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
+                Text(
+                  "Top Posts",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-            ],
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height / 8,
-            width: MediaQuery.of(context).size.width,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                HomeCategory(
-                  url: [
-                    'https://enginejunkies.com/',
-                    'http://festivalsofearth.com/',
-                  ],
-                  option: 'top',
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "Featured Posts",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-            ],
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height / 6.5,
-            width: MediaQuery.of(context).size.width,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                HomeCategory(
-                  url: [
-                    'http://insuranceofearth.com/',
-                    'https://bookworms99.com/',
-                  ],
-                  option: 'featured',
-                )
-              ],
-            ),
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                'Videos',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          _channel != null
-              ? NotificationListener<ScrollNotification>(
-                  onNotification: (ScrollNotification scrollDetails) {
-                    if (!_isLoading &&
-                        _channel.videos.length !=
-                            int.parse(_channel.videoCount) &&
-                        scrollDetails.metrics.pixels ==
-                            scrollDetails.metrics.maxScrollExtent) {
-                      _loadMoreVideos();
-                    }
-                    return false;
+                Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    myInterstitialAd
+                      ..load()
+                      ..show(
+                        anchorType: AnchorType.bottom,
+                        anchorOffset: 0.0,
+                        horizontalCenterOffset: 0.0,
+                      );
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ExplorePage(
+                                  baseurl: [
+                                    'https://enginejunkies.com/',
+                                    'http://festivalsofearth.com/',
+                                    'http://insuranceofearth.com/',
+                                    'https://bookworms99.com/'
+                                  ],
+                                  option: 'view',
+                                )));
                   },
                   child: Container(
-                    padding: EdgeInsets.only(left: 6.0, right: 6.0),
-                    height: MediaQuery.of(context).size.height / 1.5,
-                    width: MediaQuery.of(context).size.width,
-                    child: Container(child: VideoPlayerApp3()),
-                  ))
-              : Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).primaryColor, // Red
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Color(0xff25bcbb),
+                    ),
+                    child: Text(
+                      "view all",
+                      style: TextStyle(
+                        color: Colors.grey[900],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
-        ],
+                SizedBox(
+                  width: 5,
+                ),
+              ],
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height / 8,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(// BoxShape.circle or BoxShape.retangle
+                  //color: const Color(0xFF66BB6A),
+                  boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[300],
+                  offset: new Offset(5.0, 5.0),
+                  blurRadius: 5.0,
+                ),
+              ]),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                  HomeCategory(
+                    url: [
+                      'https://enginejunkies.com/',
+                      'http://festivalsofearth.com/',
+                    ],
+                    option: 'top',
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+
+            // Row(
+            //   children: <Widget>[
+            //     RaisedButton(
+            //       onPressed: () async {
+            //         if (await interstitial.isLoaded) {
+            //           interstitial.show();
+            //         }
+            //       },
+            //       child: Text("Interstitial Ad"),
+            //     ),
+            //     SizedBox(
+            //       width: 10.0,
+            //     ),
+            //     RaisedButton(
+            //       onPressed: () async {
+            //         if (await reward.isLoaded) {
+            //           reward.show();
+            //         }
+            //       },
+            //       child: Text("Reward Ad"),
+            //     )
+            //   ],
+            // ),
+            // Expanded(
+            //   child: ListView.builder(
+            //       itemCount: 50,
+            //       itemBuilder: (context, index) {
+            //         if (index % 12 == 0 && index != 0) {
+            //           return AdmobBanner(
+            //               adUnitId: AdMobService.bannerId,
+            //               adSize: AdmobBannerSize.LARGE_BANNER);
+            //         }
+            //         return ListTile(
+            //           title: Text('Item $index'),
+            //         );
+            //       }),
+            // ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "Featured Posts",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+              ],
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height / 6.5,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(// BoxShape.circle or BoxShape.retangle
+                  //color: const Color(0xFF66BB6A),
+                  boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[300],
+                  offset: new Offset(5.0, 5.0),
+                  blurRadius: 5.0,
+                ),
+              ]),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                  HomeCategory(
+                    url: [
+                      'http://insuranceofearth.com/',
+                      'https://bookworms99.com/',
+                    ],
+                    option: 'featured',
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  'Videos',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            _channel != null
+                ? NotificationListener<ScrollNotification>(
+                    onNotification: (ScrollNotification scrollDetails) {
+                      if (!_isLoading &&
+                          _channel.videos.length !=
+                              int.parse(_channel.videoCount) &&
+                          scrollDetails.metrics.pixels ==
+                              scrollDetails.metrics.maxScrollExtent) {
+                        _loadMoreVideos();
+                      }
+                      return false;
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(left: 6.0, right: 6.0),
+                      height: MediaQuery.of(context).size.height / 1.5,
+                      width: MediaQuery.of(context).size.width,
+                      child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                offset: Offset(0, 1),
+                                blurRadius: 6.0,
+                              ),
+                            ],
+                          ),
+                          child: Video2()),
+                    ),
+                  )
+                : Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).primaryColor, // Red
+                      ),
+                    ),
+                  ),
+          ],
+        ),
       ),
     ));
   }
 
   @override
   void dispose() {
+    _bannerAd.dispose();
+    myInterstitialAd.dispose();
     // TODO: implement dispose
     super.dispose();
-    _channel.videos.clear();
   }
 
   Widget makeStory({storyImage, userImage, userName}) {

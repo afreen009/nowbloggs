@@ -1,107 +1,128 @@
-// import 'package:flutter/material.dart';
-// import 'package:google_signin_example/model/channel.dart';
-// import 'package:google_signin_example/model/channel_id_list.dart';
-// import 'package:google_signin_example/page/single_channel.dart';
-// import 'package:google_signin_example/services/youtube_service.dart';
+import 'package:flutter/material.dart';
+import 'package:google_signin_example/tabs/video2.dart';
+import 'package:google_signin_example/tabs/video3.dart';
+import 'package:google_signin_example/tabs/video4.dart';
+import 'package:google_signin_example/tabs/videosPage.dart';
 
-// class ChannelListView extends StatefulWidget {
-//   @override
-//   _ChannelListViewState createState() => _ChannelListViewState();
-// }
+class VideoTab extends StatefulWidget {
+  @override
+  _VideoTabState createState() => _VideoTabState();
+}
 
-// class _ChannelListViewState extends State<ChannelListView> {
-//   final YoutubeAPIService _youtubeAPIService =
-//       YoutubeAPIService.youtubeAPIService;
+class _VideoTabState extends State<VideoTab>
+    with SingleTickerProviderStateMixin {
+  TabController _tabController;
+  Color primaryColor = Color(0xff18203d);
+  Color secondaryColor = Color(0xff232c51);
+  Color logoGreen = Color(0xff25bcbb);
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 4,
+      vsync: this,
+    );
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         appBar: AppBar(
-//           title: Text('YouTube Channel'),
-//           centerTitle: true,
-//           backgroundColor: Colors.orange,
-//         ),
-//         body: StreamBuilder<List<Channel>>(
-//           stream: this
-//               ._youtubeAPIService
-//               .getListOfChannels(channelListID: CHANNEL_ID_LIST),
-//           builder: (context, snapshot) {
-//             print(snapshot.data);
-//             if (snapshot.hasData) {
-//               return ListView.builder(
-//                 itemCount: snapshot.data.length,
-//                 itemBuilder: (context, index) =>
-//                     _buildChannelItem(snapshot.data[index]),
-//               );
-//             } else if (snapshot.connectionState == ConnectionState.active ||
-//                 snapshot.connectionState == ConnectionState.waiting) {
-//               return Center(
-//                 child: CircularProgressIndicator(),
-//               );
-//             }
-//             return Center(
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   Text('Be sure your internet is fine and retry'),
-//                   FlatButton(
-//                     color: Colors.grey[400],
-//                     child: Text(
-//                       'Retry again',
-//                     ),
-//                     onPressed: () => this.setState(() {}),
-//                   )
-//                 ],
-//               ),
-//             );
-//           },
-//         ));
-//   }
-
-//   //CHannel Item
-//   Widget _buildChannelItem(Channel channel) {
-//     return GestureDetector(
-//       onTap: () => Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (_) => SingleChannelView(
-//             channel: channel,
-//           ),
-//         ),
-//       ),
-//       child: Container(
-//         margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-//         padding: EdgeInsets.all(10.0),
-//         height: 140.0,
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           boxShadow: [
-//             BoxShadow(
-//               color: Colors.black12,
-//               offset: Offset(0, 1),
-//               blurRadius: 6.0,
-//             ),
-//           ],
-//         ),
-//         child: Row(
-//           children: <Widget>[
-//             Image(
-//               width: 150.0,
-//               image: NetworkImage(channel.profilePictureUrl),
-//             ),
-//             SizedBox(width: 10.0),
-//             Expanded(
-//               child: Text(
-//                 channel.title,
-//                 style: TextStyle(
-//                   color: Colors.black,
-//                   fontSize: 18.0,
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: DefaultTabController(
+        length: 4,
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                color: secondaryColor,
+                child: TabBar(
+                  labelColor: Colors.white,
+                  indicatorColor: Colors.white,
+                  // controller: _tabController,
+                  tabs: <Widget>[
+                    Tab(
+                      child: Text(
+                        'Engine Junkies',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              BoxShadow(
+                                color: Color.fromRGBO(0, 0, 0, 0.15),
+                                offset: Offset(0, 5),
+                                blurRadius: 10.0,
+                              )
+                            ]),
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        'Insurance',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              BoxShadow(
+                                color: Color.fromRGBO(0, 0, 0, 0.15),
+                                offset: Offset(0, 5),
+                                blurRadius: 10.0,
+                              )
+                            ]),
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        'Books',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              BoxShadow(
+                                color: Color.fromRGBO(0, 0, 0, 0.15),
+                                offset: Offset(0, 5),
+                                blurRadius: 10.0,
+                              )
+                            ]),
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        'Festivals',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              BoxShadow(
+                                color: Color.fromRGBO(0, 0, 0, 0.15),
+                                offset: Offset(0, 5),
+                                blurRadius: 10.0,
+                              )
+                            ]),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  // color: Colors.white,
+                  child: TabBarView(
+                    children: [
+                      VideoPlayerApp(),
+                      Video2(),
+                      Video3(),
+                      Video4(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -4,8 +4,11 @@ import 'package:google_signin_example/model/channel.dart';
 import 'package:google_signin_example/model/video.dart';
 import 'package:google_signin_example/screens/video_screen.dart';
 import 'package:google_signin_example/services/api_services.dart';
+import 'package:google_signin_example/widget/helpers.dart';
 
 class VideoPlayerApp3 extends StatefulWidget {
+  final String option;
+  VideoPlayerApp3({this.option});
   @override
   _VideoPlayerApp3State createState() => _VideoPlayerApp3State();
 }
@@ -21,6 +24,7 @@ class _VideoPlayerApp3State extends State<VideoPlayerApp3>
   Color secondaryColor = Color(0xff232c51);
   Color logoGreen = Color(0xff25bcbb);
   List videoList = new List();
+
   @override
   void initState() {
     super.initState();
@@ -28,37 +32,13 @@ class _VideoPlayerApp3State extends State<VideoPlayerApp3>
   }
 
   _initChannel() async {
-    Channel channel1 = await APIService.instance
-        .fetchChannel(channelId: 'UCgpDrKxkgzFYKPh1wOQuY8Q');
-    Channel channel2 = await APIService.instance
-        .fetchChannel(channelId: 'UCsu2ICvlMu3NtaTxfEnupXA');
     Channel channel3 = await APIService.instance
         .fetchChannel(channelId: 'UCKmwUXQLo6ny-GD2a0dOf8Q');
     Channel channel4 = await APIService.instance
         .fetchChannel(channelId: 'UCGuFh3Ul7OxJd3MUDKP2cLw');
     setState(() {
-      _channel1 = channel1;
-      _channel2 = channel2;
       _channel3 = channel3;
       _channel4 = channel4;
-      for (int i = 0; i < _channel1.videos.length; i++) {
-        videoList.add([
-          _channel1.videos[i].id,
-          _channel1.videos[i].channelTitle,
-          _channel1.videos[i].title,
-          _channel1.videos[i].thumbnailUrl,
-          _channel1.profilePictureUrl
-        ]);
-      }
-      for (int j = 0; j < _channel2.videos.length; j++) {
-        videoList.add([
-          _channel2.videos[j].id,
-          _channel2.videos[j].channelTitle,
-          _channel2.videos[j].title,
-          _channel2.videos[j].thumbnailUrl,
-          _channel2.profilePictureUrl
-        ]);
-      }
       for (int k = 0; k < _channel3.videos.length; k++) {
         videoList.add([
           _channel3.videos[k].id,
@@ -81,7 +61,11 @@ class _VideoPlayerApp3State extends State<VideoPlayerApp3>
     videoList.shuffle();
   }
 
-  _buildVideo(videos) {
+  sendVideos() {
+    return videoList;
+  }
+
+  _buildVideo(videos, size) {
     for (int i = 0; i < videos.length; i++) {
       print('video id' + videos.toString());
       return Column(
@@ -98,7 +82,6 @@ class _VideoPlayerApp3State extends State<VideoPlayerApp3>
             ),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(15)),
                 boxShadow: [
                   BoxShadow(
@@ -108,9 +91,23 @@ class _VideoPlayerApp3State extends State<VideoPlayerApp3>
                   ),
                 ],
               ),
-              child: Image(image: NetworkImage(videos[3])),
+              child: Image(
+                image: NetworkImage(videos[3]),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
+          // ClipRRect(
+          //   borderRadius: BorderRadius.circular(8.0),
+          //   child: Image.network(videos[4]),
+          // ),
+          // Expanded(
+          //   child: Text(
+          //     ' ' + videos[2],
+          //     style: TextStyle(
+          //         letterSpacing: 0.5, fontWeight: FontWeight.bold),
+          //   ),
+          // ),
           Container(
             width: double.infinity,
             child: Padding(
@@ -155,7 +152,7 @@ class _VideoPlayerApp3State extends State<VideoPlayerApp3>
     }
   }
 
-  _loadMoreVideos() async {
+  loadMoreVideos() async {
     _isLoading = true;
     List<Video> moreVideos = await APIService.instance
         .fetchVideosFromPlaylist(playlistId: _channel1.uploadPlaylistId);
@@ -182,6 +179,7 @@ class _VideoPlayerApp3State extends State<VideoPlayerApp3>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: _channel3 != null
           ? NotificationListener<ScrollNotification>(
@@ -191,18 +189,21 @@ class _VideoPlayerApp3State extends State<VideoPlayerApp3>
                         int.parse(_channel3.videoCount) &&
                     scrollDetails.metrics.pixels ==
                         scrollDetails.metrics.maxScrollExtent) {
-                  _loadMoreVideos();
+                  loadMoreVideos();
                 }
                 return false;
               },
               child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true, // <- added
+                primary: false,
                 itemCount: videoList.length,
                 itemBuilder: (BuildContext context, int index) {
                   print(videoList.length);
                   if (index == 0) {
                     return Container();
                   }
-                  return _buildVideo(videoList[index]);
+                  return _buildVideo(videoList[index], size);
                 },
               ),
             )
@@ -218,7 +219,9 @@ class _VideoPlayerApp3State extends State<VideoPlayerApp3>
 
   Widget makeShareButton() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      height: 40,
+      width: 150,
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey[200]),
         borderRadius: BorderRadius.circular(50),

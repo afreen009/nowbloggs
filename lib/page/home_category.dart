@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_signin_example/model/video.dart';
+import 'package:google_signin_example/network/youtube_channel.dart';
 import 'package:google_signin_example/widget/config.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -18,7 +20,8 @@ class _HomeCategoryState extends State<HomeCategory>
     with AutomaticKeepAliveClientMixin {
   List<PostEntity> posts = new List<PostEntity>();
   bool isLoading = true;
-
+  YoutubeResponse youtubeResponse = new YoutubeResponse();
+  List videoList;
   @override
   void initState() {
     // print('here' + widget.url);
@@ -33,37 +36,55 @@ class _HomeCategoryState extends State<HomeCategory>
         });
       }).then((value) => print(posts));
     }
+    getVideo();
+  }
+
+  getVideo() async {
+    videoList = await youtubeResponse.initChannel();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<PostEntity> items = posts.reversed.toList();
-    items.shuffle();
-    // print(items);
+    var items = posts.reversed.toList();
+    // items.forEach((element) => videoList.add(element));
+    // var newList = items + videoList;
+    // newList.shuffle();
+    print(videoList);
     super.build(context);
     return isLoading
         ? SizedBox(
-            width: MediaQuery.of(context).size.width / 2.5,
+            width: MediaQuery.of(context).size.width / 2,
             height: 300.0,
-            child: Shimmer.fromColors(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  color: Colors.grey,
-                ),
-              ),
-              baseColor: Colors.white70,
-              highlightColor: Colors.grey[700],
-              direction: ShimmerDirection.ltr,
+            child: ListView.builder(
+              itemCount: 10,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return Shimmer.fromColors(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  baseColor: Colors.white70,
+                  highlightColor: Colors.grey[700],
+                  direction: ShimmerDirection.ltr,
+                );
+              },
             ))
         : ListView.builder(
-            itemCount: items?.length ?? 0,
+            primary: false,
+            itemCount: 5,
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
-//            physics: ClampingScrollPhysics(),
+            physics: ClampingScrollPhysics(),
             itemBuilder: (context, index) {
-              return HomePost(items[index],
-                  isFeaturedList: true, option: widget.option);
+              return HomePost(
+                items[index],
+                isFeaturedList: true,
+                option: widget.option,
+                videoList: videoList[index],
+              );
             },
           );
   }

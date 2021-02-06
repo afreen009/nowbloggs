@@ -6,12 +6,12 @@ import 'package:google_signin_example/model/video_model.dart';
 import 'package:google_signin_example/screens/video_screen.dart';
 import 'package:google_signin_example/services/api_services.dart';
 
-class VideoPlayerApp extends StatefulWidget {
+class Video4 extends StatefulWidget {
   @override
-  _VideoPlayerAppState createState() => _VideoPlayerAppState();
+  _Video4State createState() => _Video4State();
 }
 
-class _VideoPlayerAppState extends State<VideoPlayerApp> {
+class _Video4State extends State<Video4> {
   Channel _channel;
   bool _isLoading = false;
   Color primaryColor = Color(0xff18203d);
@@ -25,14 +25,14 @@ class _VideoPlayerAppState extends State<VideoPlayerApp> {
 
   _initChannel() async {
     Channel channel = await APIService.instance
-        .fetchChannel(channelId: 'UCgpDrKxkgzFYKPh1wOQuY8Q');
+        .fetchChannel(channelId: 'UCGuFh3Ul7OxJd3MUDKP2cLw');
 
     setState(() {
       _channel = channel;
     });
   }
 
-  _buildVideo(Video video) {
+  _buildVideo(Video video, Channel channels) {
     return Column(
       children: [
         Column(
@@ -45,10 +45,9 @@ class _VideoPlayerAppState extends State<VideoPlayerApp> {
                 ),
               ),
               child: Container(
-                height: 200,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(15)),
                   boxShadow: [
                     BoxShadow(
@@ -58,12 +57,7 @@ class _VideoPlayerAppState extends State<VideoPlayerApp> {
                     ),
                   ],
                 ),
-                child: Image(
-                  image: NetworkImage(
-                    video.thumbnailUrl,
-                  ),
-                  fit: BoxFit.cover,
-                ),
+                child: Image(image: NetworkImage(video.thumbnailUrl)),
               ),
             ),
             Container(
@@ -81,7 +75,7 @@ class _VideoPlayerAppState extends State<VideoPlayerApp> {
                     CircleAvatar(
                       backgroundColor: Colors.white,
                       radius: 20.0,
-                      backgroundImage: NetworkImage(_channel.profilePictureUrl),
+                      backgroundImage: NetworkImage(channels.profilePictureUrl),
                     ),
                     Expanded(child: Text('  ' + video.title)),
                   ],
@@ -122,10 +116,6 @@ class _VideoPlayerAppState extends State<VideoPlayerApp> {
               onNotification: (ScrollNotification scrollDetails) {
                 if (!_isLoading &&
                     _channel.videos.length != int.parse(_channel.videoCount) &&
-                    // _channel2.videos.length !=
-                    //     int.parse(_channel2.videoCount) &&
-                    // _channel3.videos.length !=
-                    //     int.parse(_channel3.videoCount) &&
                     scrollDetails.metrics.pixels ==
                         scrollDetails.metrics.maxScrollExtent) {
                   _loadMoreVideos();
@@ -135,13 +125,13 @@ class _VideoPlayerAppState extends State<VideoPlayerApp> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ListView.builder(
-                  itemCount: _channel.videos.length,
+                  itemCount: 1 + _channel.videos.length,
                   itemBuilder: (BuildContext context, int index) {
                     if (index == 0) {
                       return Container();
                     }
                     Video videos = _channel.videos[index - 1];
-                    return _buildVideo(videos);
+                    return _buildVideo(videos, _channel);
                   },
                 ),
               ),

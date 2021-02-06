@@ -1,5 +1,6 @@
 import 'dart:async';
 
+// import 'package:admob_flutter/admob_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_signin_example/page/home.dart';
@@ -12,10 +13,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'admob.dart';
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  // Admob.initialize(AdManager.appId);
   runApp(MyApp());
 }
 

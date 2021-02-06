@@ -7,18 +7,15 @@ import 'package:google_signin_example/model/post_entity.dart';
 import 'package:google_signin_example/network/wp_api.dart';
 import 'package:google_signin_example/page/article.dart';
 import 'package:google_signin_example/page/edit_profile.dart';
-import 'package:google_signin_example/page/explore.dart';
+import 'package:google_signin_example/page/explore_page.dart';
 import 'package:google_signin_example/page/post_details.dart';
-import 'package:google_signin_example/page/search.dart';
-import 'package:google_signin_example/page/video_Page.dart';
 import 'package:google_signin_example/page/view_all.dart';
-import 'package:google_signin_example/screens/auth/auth.dart';
-import 'package:google_signin_example/tabs/videosPage.dart';
 import 'package:google_signin_example/widget/config.dart';
 import 'package:google_signin_example/widget/login.dart';
 import 'package:provider/provider.dart';
 import '../services/theme_changer.dart';
 import '../tabs/home_tab.dart';
+import 'all_videos.dart';
 import 'channel_list.dart';
 
 const String testDevice = '';
@@ -53,6 +50,7 @@ class _HomePageState extends State<HomePage> {
   List names = new List();
   List filteredNames = new List();
   List<PostEntity> posts = new List<PostEntity>();
+  List tempList = new List();
   Icon _searchIcon = new Icon(
     Icons.search,
     color: Color(0xff18203d),
@@ -92,27 +90,25 @@ class _HomePageState extends State<HomePage> {
             print("title" + data.toString());
             tempList.add(data[j].title);
           }
-          setState(() {
-            names = tempList;
-            names.shuffle();
-            filteredNames = names;
-          });
         });
       });
     }
 
     print('temp $tempList');
+    // setState(() {
     setState(() {
       names = tempList;
       names.shuffle();
       filteredNames = names;
     });
+    // });
   }
 
   @override
   void initState() {
     this._getNames();
     super.initState();
+    tempList.clear();
   }
 
   @override
@@ -199,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                   option: 'explore',
                 ),
                 HomeTab(),
-                VideoPlayerApp3(),
+                VideoTab(),
                 EditProfilePage(),
                 // SettingsUI()
               ],
@@ -266,7 +262,7 @@ class _HomePageState extends State<HomePage> {
   _buildList() {
     if (_searchText.isNotEmpty) {
       print('data[index $data');
-      List tempList = new List();
+
       for (int i = 0; i < filteredNames.length; i++) {
         if (filteredNames[i]
             .toLowerCase()

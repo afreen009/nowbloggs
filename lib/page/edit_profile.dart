@@ -1,7 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_signin_example/page/theme.dart';
 import 'package:google_signin_example/screens/auth/auth.dart';
+import 'package:google_signin_example/services/theme_changer.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'home_page.dart';
 
@@ -34,6 +40,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String email;
   String photoUrl;
   String displayName;
+  bool _switchValue = false;
   sharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('email');
@@ -50,6 +57,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final themeChanger = Provider.of<ThemeChanger>(context);
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(left: 16, right: 16),
@@ -62,77 +71,66 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     width: 130,
                     height: 130,
                     decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 4,
-                            color: Theme.of(context).scaffoldBackgroundColor),
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 2,
-                              blurRadius: 10,
-                              color: Colors.black.withOpacity(0.1),
-                              offset: Offset(0, 10))
-                        ],
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                              photoUrl.toString(),
-                            ))),
-                    // image: DecorationImage(
-                    //     fit: BoxFit.cover,
-                    //     image: Image.network()),
-                    // child: Image.network(widget.photoUrl.toString()),
+                      border: Border.all(
+                          width: 4,
+                          color: Theme.of(context).scaffoldBackgroundColor),
+                      boxShadow: [
+                        BoxShadow(
+                            spreadRadius: 2,
+                            blurRadius: 10,
+                            color: Colors.black.withOpacity(0.1),
+                            offset: Offset(0, 10))
+                      ],
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(user.photoURL),
+                      ),
+                    ),
                   ),
-                  // Positioned(
-                  //   bottom: 0,
-                  //   right: 0,
-                  //   child: Container(
-                  //     height: 40,
-                  //     width: 40,
-                  //     decoration: BoxDecoration(
-                  //       shape: BoxShape.circle,
-                  //       border: Border.all(
-                  //         width: 4,
-                  //         color: Theme.of(context).scaffoldBackgroundColor,
-                  //       ),
-                  //       color: Colors.green,
-                  //     ),
-                  //     child: Icon(
-                  //       Icons.edit,
-                  //       color: Colors.white,
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
             SizedBox(
               height: 35,
             ),
-            buildTextField("Full Name", displayName, false),
-            buildTextField("E-mail", email, false),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ThemePage()));
-              },
-              child: Container(
-                height: 30,
-                // color: Colors.pink,
-                child: Row(
-                  children: [
-                    Icon(Icons.color_lens_outlined),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text('Theme',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          // color: Colors.black,
-                        )),
-                  ],
-                ),
+            buildTextField("Full Name", user.displayName, false),
+            buildTextField("E-mail", user.email, false),
+            Container(
+              height: 30,
+              // color: Colors.pink,
+              child: Row(
+                children: [
+                  // SizedBox(
+                  //   width: 10,
+                  // ),
+                  Text('Theme',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        // color: Colors.black,
+                      )),
+                  Spacer(),
+                  Transform.scale(
+                      scale: .7,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            _switchValue = !_switchValue;
+                          });
+                        },
+                        child: CupertinoSwitch(
+                          trackColor: Colors.grey,
+                          value: _switchValue,
+                          onChanged: (bool value) {
+                            setState(() {
+                              _switchValue = value;
+                              themeChanger.toggle();
+                            });
+                          },
+                        ),
+                      )),
+                ],
               ),
             )
             // SizedBox(
